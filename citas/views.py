@@ -1,8 +1,8 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Cita
-from .form import CitaForm,LoginForm, PasswordResetRequestForm,UserRegistrationForm
+from citas.models import Cita
+from citas.form import LoginForm, PasswordResetRequestForm,UserRegistrationForm
 from django.contrib.auth.forms import AuthenticationForm    
 from django.contrib.auth import login
 from django.contrib.auth import authenticate, login as auth_login

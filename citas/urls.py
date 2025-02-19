@@ -1,6 +1,6 @@
 # Configuración de URLs
 from django.urls import path
-from .views import  lista_citas, detalle_cita, crear_cita, delete_cita, update_cita
+from citas.views import  lista_citas, detalle_cita, crear_cita, delete_cita, update_cita
 
 urlpatterns = [
     path('citas/eliminar/<int:cita_id>/', delete_cita, name='delete_cita'),

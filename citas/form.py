@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cita
+from citas.models import Cita
 from django import forms
 from django.contrib.auth.models import User
 from django import forms
