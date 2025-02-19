@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Citas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="background-color: #f4f7fc;">
+
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Lista de Citas</h2>
+
+    <form method="POST" action="{% url 'lista_citas' %}">
+      {% csrf_token %}
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Descripción</th>
+            <th>Fecha</th>
+            <th>Paciente</th>
+            <th>Medico</th>
+            <th>Numero de cita</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Fila para agregar una nueva cita -->
+          <tr>
+            <td>
+              <select class="form-control" name="tipo_cita" data-id="{{ nuevo_numero_cita }}">
+                <option value="consulta">Consulta</option>
+                <option value="seguimiento">Seguimiento</option>
+                <option value="urgencia">Urgencia</option>
+                <option value="tratamiento">Tratamiento</option>
+              </select>
+            </td>
+
+            <td><input type="datetime-local" name="fecha_hora" class="form-control"></td>
+            <td><input type="text" name="paciente" class="form-control" value="{{ request.user.username }}" readonly></td>
+            <td><input type="text" name="medico" class="form-control"></td>
+            <td><input type="text" name="numero_cita" class="form-control" value="{{ nuevo_numero_cita }}" readonly></td>
+            <td>
+              <button type="submit" class="btn btn-success btn-sm">Agregar</button>
+            </td>
+          </tr>
+          {% for cita in citas %}
+            <tr>
+              <td>
+                <select class="form-control" name="tipo_cita" data-id="{{ cita.numero_cita }}">
+                  <option value="consulta" {% if cita.tipo_cita == "consulta" %}selected{% endif %}>Consulta</option>
+                  <option value="seguimiento" {% if cita.tipo_cita == "seguimiento" %}selected{% endif %}>Seguimiento</option>
+                  <option value="urgencia" {% if cita.tipo_cita == "urgencia" %}selected{% endif %}>Urgencia</option>
+                  <option value="tratamiento" {% if cita.tipo_cita == "tratamiento" %}selected{% endif %}>Tratamiento</option>
+                </select>
+              </td>
+
+              <td><input type="datetime-local" name="fecha_hora" class="form-control" value="{{ cita.fecha_hora|date:'Y-m-d\TH:i' }}"></td>
+
+              <td>{{ cita.paciente }}</td>
+              <td><input type="text" name="medico" class="form-control" value="{{ cita.medico|default_if_none:'' }}">
+              </td>
+              <td>    <input type="text" name="numero_cita" class="form-control" value="{{ cita.numero_cita }}" readonly>
+              </td>
+              <td>
+                <!-- Botón de actualizar -->
+               
+                  <button type="submit" class="btn btn-warning btn-sm" id="{{cita.numero_cita}}">Actualizar</button>
+             
+                <!-- Botón de eliminar -->
+                <form method="POST" action="{% url 'delete_cita' cita.numero_cita %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" name="eliminar" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+                
+
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+
+    {% if not citas %}
+      <p class="text-center">No hay citas disponibles.</p>
+    {% endif %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
